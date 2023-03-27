@@ -18,7 +18,7 @@ class ReadThis extends HTMLElement {
     
     divs.forEach(function(div){
       let button = document.createElement("button");
-      button.textContent = '&#8987';
+      button.innerHTML = '&#127911;';
       button.className = "read-button";
       div.appendChild(button);
       button.addEventListener("click", function(){

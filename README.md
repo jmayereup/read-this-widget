@@ -25,7 +25,7 @@ If the text is not English, you need to specify the language.
         </div>
     </read-this>
   
-  You can use this `<script src=https://cdn.jsdelivr.net/gh/jmayereup/read-this-widget/read-this.js><script>`
+  You can use this `<script type="text/javascript" src=https://cdn.jsdelivr.net/gh/jmayereup/read-this-widget/read-this.js><script>`
   
   List of codes. Not all codes may be supported by your browser.
   http://www.lingoes.net/en/translator/langcode.htm

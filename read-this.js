@@ -22,11 +22,11 @@ class ReadThis extends HTMLElement {
       button.className = "read-button";
       div.appendChild(button);
       button.addEventListener("click", function(){
-        let parentText = this.parentElement.textContent;
+        let parentText = div.textContent;
         let length = parentText.length;
-        let text = parentText.substring(0, length-1);
+        let text = parentText.substring(0, length-8);
         console.log(text);
-        let languageSetting = this.parentElement.dataset.lang;
+        let languageSetting = div.dataset.lang;
         languageSetting ? lang = languageSetting : lang = "en-US";
         console.log(lang);
         readText(text);

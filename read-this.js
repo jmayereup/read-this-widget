@@ -24,7 +24,7 @@ class ReadThis extends HTMLElement {
       button.addEventListener("click", function(){
         let parentText = div.textContent;
         let length = parentText.length;
-        let text = parentText.substring(0, length-8);
+        let text = parentText.substring(0, length-1);
         console.log(text);
         let languageSetting = div.dataset.lang;
         languageSetting ? lang = languageSetting : lang = "en-US";

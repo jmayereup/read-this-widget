@@ -3,7 +3,8 @@ A simple web component for the webspeech api
 
 Include the script in your html and then wrap the text to be read. 
 You can wrap multiple items, but each <div> that you want the 
-widget to appear in and read should have class="read-this".
+widget to appear in and read. It should have class="read-this".
+Class of "read-lines" will create widget after each line break.
   
 If the text is not English, you need to specify the language.
 
@@ -23,7 +24,15 @@ If the text is not English, you need to specify the language.
         <div class="read-this">
             This is the text to be read.
         </div>
+        <br>
+        <div class="read-lines" data-lang="en-US">
+            This is the text to be read.
+            It will read by lines.
+            <p>HTML tags like p should be ignored.</p>
+        </div>
     </read-this>
+
+    
   
   You can use this `<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jmayereup/read-this-widget/read-this.js"></script>`
   

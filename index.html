@@ -10,30 +10,28 @@
 
 <body>
     <read-this>
-        <div class="read-this" data-lang="en-US">
-            This is the text to be read.
-        </div>
-        <div class="read-this" data-lang="es-MX">
-            Este es el texto a leer.
-        </div>
-        <div class="read-this" data-lang="th-TH">
-            นี่คือข้อความที่จะอ่าน
-        </div>
-        <div class="read-this">
-            Este es el texto a leer.
-        </div>
-        <div class="read-this">
-            This is the text to be read.
+
+        <div class="read-lines" data-lang="en-US">
+            <h3>This is the text to be read.</h3>
+            It will be read by lines.
+            <p>HTML tags like p should be ignored.</p>
         </div>
         <br>
         <div class="read-lines" data-lang="en-US">
-            This is the text to be read.
-            It will read by lines.
-            <p>HTML tags like p should be ignored.</p>
+            This is the text to be read. It will be read by lines. HTML tags like p should be ignored.
         </div>
-
-
-
+        <br>
+        <div class="read-lines" data-lang="es-MX">
+            Juan: Mamá, estoy triste.
+            María: ¿Por qué, hijo?
+            Juan: Porque Pedro y yo tuvimos una pelea.
+        </div>
+        <br>
+        <div class="read-lines" data-lang="th-TH">
+            ฉาก: ช่วงเวลาพักเที่ยงในโรงอาหารของโรงเรียน
+            แมรี่: สวัสดี นิวัติ! ชั้นเรียนตอนเช้าของคุณเป็นอย่างไร
+            นิวัฒน์: ดีครับ ขอบคุณครับ และของคุณ?
+        </div>
     </read-this>
 
 
@@ -45,3 +43,8 @@
 
 
 <script src="./read-this.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>

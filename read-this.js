@@ -4,35 +4,63 @@ class ReadThis extends HTMLElement {
     this.utterance = new SpeechSynthesisUtterance();
     this.utterance.lang = 'en-US';
     this.utterance.volume = 1;
-    this.utterance.rate = 1;
+    this.utterance.rate = .8;
     this.utterance.pitch = 1;
+    let utteranceViceURI = null;
 
     const readThisElement = "";
     let lang = this.utterance.lang;
-    // getVoices().then(voices => {
-    //   let languages = voices.map(voice => voice.lang);
-    //   console.log(languages);
-    // });
-    // Get all elements with class "read-lines"
+
+    // Add dropdown menu to each span
+    const select = document.createElement('select');
+    select.classList.add('read-this-select');
+
     const readLinesElements = document.querySelectorAll('.read-lines');
+      // Listen for the voiceschanged event to update the select element
+      speechSynthesis.addEventListener('voiceschanged', (event) => {
+        // Filter voices for natural voices that match the current language
+        const voices = speechSynthesis.getVoices().filter((voice) => {
+          return voice.name.toLowerCase().includes("natural") && (voice.lang === lang);
+        });
+    
+        // Add option elements, one for each matching voice
+        voices.forEach((voice) => {
+          const option = document.createElement('option');
+          option.value = voice.voiceURI;
+          option.textContent = voice.name;
+          select.appendChild(option);
+        });
+    
+        // Listen for the change event on the select element
+        select.addEventListener('change', (event) => {
+          utteranceViceURI = event.target.value;
+        });
+         })   // Prepend the select element to the span
+        
+
+
 
     readLinesElements.forEach(readLines => {
       let languageSetting = readLines.dataset.lang;
       languageSetting ? lang = languageSetting : lang = "en-US";
       const content = readLines.textContent.trim();
       const lines = content.split('\n');
-      readLines.textContent="";
+      readLines.textContent = "";
 
       lines.forEach(line => {
         const span = document.createElement('span');
 
         span.classList.add('read-this');
         span.classList.add('read-this');
-        span.dataset.lang = lang;        
+        span.dataset.lang = lang;
         span.textContent = line;
         readLines.appendChild(span);
+
+
       });
-    });
+      const firstLine = document.querySelector(".read-lines");
+      firstLine.appendChild(select);
+    })
 
 
 
@@ -52,42 +80,25 @@ class ReadThis extends HTMLElement {
         languageSetting ? lang = languageSetting : lang = "en-US";
         console.log(lang);
         readText(parentText);
-      })
-
+      }
+      )
     })
-
 
     function readText(text) {
       let utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = lang;
+      utterance.voiceURI  = utteranceViceURI;
+      // (lang === "th-TH") ? utterance.voiceURI = "Microsoft Niwat Online (Natural) - Thai (Thailand)" : console.log("nope");
+      // (lang === "en-US") ? utterance.voiceURI = "Microsoft Christopher Online (Natural) - English  (United States)" : console.log("nope");
+      // (lang === "es-MX") ? utterance.voiceURI = "Microsoft Jorge Online (Natural) - Spanish (Mexico)" : console.log("nope");
+      // (lang === "de-DE") ? utterance.voiceURI = "Microsoft Amala Online (Natural) - German (Germany)" : console.log("nope");
       window.speechSynthesis.speak(utterance);
     }
-    // function setDefaultVoice() {
-
-    //   const defaultVoice = voices.find(v => v.default);
-    //   if (defaultVoice) {
-    //     this.setVoice(defaultVoice.name);
-    //   }
-    // }
-
-    // function getVoices() {
-    //   return new Promise(resolve => {
-    //     let voices = speechSynthesis.getVoices();
-    //     if (voices.length) {
-    //       resolve(voices);
-    //     } else {
-    //       speechSynthesis.addEventListener('voiceschanged', () => {
-    //         voices = speechSynthesis.getVoices();
-    //         resolve(voices);
-    //       });
-    //     }
-    //   });
-    // }
-
   }
 }
-customElements.define('read-this', ReadThis);
 
+
+customElements.define('read-this', ReadThis);
 
 
 

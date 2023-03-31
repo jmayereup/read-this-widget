@@ -11,37 +11,58 @@ class ReadThis extends HTMLElement {
     const readThisElement = "";
     let lang = utterance.lang;
 
-    // Add dropdown menu to each span
-    const select = document.createElement('select');
-    select.classList.add('read-this-select');
+
 
     const readLinesElements = document.querySelectorAll('.read-lines');
 
-    speechSynthesis.addEventListener('voiceschanged', (event) => {
+    // Add dropdown menu to each span
+    // const select = document.createElement('select');
+    // select.classList.add('read-this-select');
 
-      const voices = speechSynthesis.getVoices().filter((voice) => {
+    // speechSynthesis.addEventListener('voiceschanged', (event) => {
 
-        return voice.lang === lang;
+    //   const voices = speechSynthesis.getVoices().filter((voice) => {
 
-      });
-      console.log(voices);
-      // Add option elements, one for each matching voice
-      voices.forEach((voice) => {
-        const option = document.createElement('option');
-        option.value = voice.voiceURI;
-        option.textContent = voice.name;
-        select.appendChild(option);
-      });
+    //     return voice.lang === lang;
 
-      // Listen for the change event on the select element
-      select.addEventListener('change', (event) => {
-        utteranceVoiceURI = event.target.value;
-        console.log(utteranceVoiceURI);
+    //   });
+    //   console.log(voices);
+    //   // Add option elements, one for each matching voice
+    //   voices.forEach((voice) => {
+    //     const option = document.createElement('option');
+    //     option.value = voice.voiceURI;
+    //     option.textContent = voice.name;
+    //     select.appendChild(option);
+    //   });
+
+    //   // Listen for the change event on the select element
+    //   select.addEventListener('change', (event) => {
+    //     utteranceVoiceURI = event.target.value;
+    //     console.log(utteranceVoiceURI);
+    //   });
+    // })
+
+    const readVocabElements = document.querySelectorAll('.read-vocab');
+    readVocabElements.forEach(readVocab => {
+      let languageSetting = readVocab.dataset.lang;
+      languageSetting ? lang = languageSetting : lang = "en-US";
+      const content = readVocab.textContent.trim();
+      const lines = content.split('\n');
+      readVocab.textContent = "";
+      lines.forEach(line => {
+        const parts = line.split('-');
+
+        const span = document.createElement('span');
+
+        span.classList.add('read-this');
+        span.dataset.lang = lang;
+        span.dataset.speak = parts[0];
+        span.textContent = line;
+        readVocab.appendChild(span);
+
+
       });
     })
-
-
-
 
     readLinesElements.forEach(readLines => {
       let languageSetting = readLines.dataset.lang;
@@ -53,8 +74,8 @@ class ReadThis extends HTMLElement {
         const span = document.createElement('span');
 
         span.classList.add('read-this');
-        span.classList.add('read-this');
         span.dataset.lang = lang;
+        span.dataset.speak = content;
         span.textContent = line;
         readLines.appendChild(span);
 
@@ -67,7 +88,7 @@ class ReadThis extends HTMLElement {
     let spans = document.querySelectorAll(".read-this");
 
     spans.forEach(function (span) {
-      let parentText = span.textContent.trim();
+      let parentText = span.dataset.speak.trim();
       let button = document.createElement("button");
       button.innerHTML = '&#127911;';
       button.className = "read-button";
@@ -94,7 +115,7 @@ class ReadThis extends HTMLElement {
       utterance.text = text;
       utterance.lang = lang;
       utterance.rate = .8;
-      utterance.voiceURI = utteranceVoiceURI;
+      // utterance.voiceURI = utteranceVoiceURI;
       console.log("final URI", utterance.voiceURI);
       // utterance = new SpeechSynthesisUtterance(text);
       // (lang === "th-TH") ? utterance.voiceURI = "Microsoft Niwat Online (Natural) - Thai (Thailand)" : console.log("nope");

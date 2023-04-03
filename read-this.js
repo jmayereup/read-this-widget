@@ -56,11 +56,11 @@ class ReadThis extends HTMLElement {
 
         span.classList.add('read-this');
         span.dataset.lang = lang;
-        span.dataset.speak = parts[0];
-        span.textContent = line;
+        let partCleaned = parts[0].trimStart().trim();
+        span.dataset.speak = partCleaned;
+        span.dataset.translate = partCleaned;
+        span.textContent = partCleaned;
         readVocab.appendChild(span);
-
-
       });
     })
 
@@ -75,7 +75,7 @@ class ReadThis extends HTMLElement {
 
         span.classList.add('read-this');
         span.dataset.lang = lang;
-        span.dataset.speak = content;
+        span.dataset.speak = line;
         span.textContent = line;
         readLines.appendChild(span);
 
@@ -89,10 +89,18 @@ class ReadThis extends HTMLElement {
 
     spans.forEach(function (span) {
       let parentText = span.dataset.speak.trim();
+      let translatethis = span.dataset.translate;
+      console.log('translate this var', translatethis);
       let button = document.createElement("button");
       button.innerHTML = '&#127911;';
       button.className = "read-button";
       span.appendChild(button);
+      if (translatethis) {
+        let translateSpan = document.createElement("span");
+        translateSpan.textContent = ` (${translatethis})`;
+        translateSpan.setAttribute('translate', 'yes');
+        span.appendChild(translateSpan);
+      }
       const lineBreak = document.createElement('br');
       span.appendChild(lineBreak);
       button.addEventListener("click", function () {

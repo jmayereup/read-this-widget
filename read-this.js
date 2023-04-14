@@ -10,11 +10,110 @@ class ReadThis extends HTMLElement {
 
     const readThisElement = "";
     let lang = utterance.lang;
+    let lang2 = "";
 
 
+    const readVocabElements = document.querySelectorAll('.read-vocab');
+    prepareLines(readVocabElements);
+    
+    function prepareLines(data) {
+    data.forEach(readVocab => {
+      let languageSetting = readVocab.dataset.lang;
+      let languageSetting2 = readVocab.dataset.lang2;
+      languageSetting ? lang = languageSetting : lang = "en-US";
+      languageSetting2 ? lang2 = languageSetting2 : lang2 = "th-TH";
+
+      const content = readVocab.textContent.trim();
+      const lines = content.split('\n');
+      readVocab.textContent = "";
+      lines.forEach(line => {
+        const parts = line.split('-');
+
+        const span = document.createElement('span');
+        span.classList.add('read-this');
+        span.dataset.lang = lang;
+        span.dataset.lang2 = lang2;
+        let partCleaned = parts[0].trimStart().trim();
+        span.dataset.speak = partCleaned;
+        (parts[1]) ? span.dataset.translate = parts[1].trimStart().trim() : span.dataset.translate = "";
+        span.textContent = partCleaned;
+        readVocab.appendChild(span);
+      });
+    })
+  }
 
     const readLinesElements = document.querySelectorAll('.read-lines');
+    prepareLines(readLinesElements);
 
+    let spans = document.querySelectorAll(".read-this");
+
+    spans.forEach(function (span) {
+      let parentText = span.dataset.speak.trim();
+      let translatethis = span.dataset.translate;
+      let button = document.createElement("button");
+      let button2 = document.createElement('button');
+      button.innerHTML = '&#127911;';
+      button.className = "read-button";
+      span.appendChild(button);
+      if (translatethis) {
+        button2.innerHTML = '&#127911;';
+        button2.className = "read-button";
+        let translateSpan = document.createElement("span");
+        let lineBreak1 = document.createElement("br");
+        span.appendChild(lineBreak1);
+        translateSpan.textContent = ` (${translatethis})`;
+        translateSpan.setAttribute('translate', 'yes');
+        span.appendChild(translateSpan);
+        span.appendChild(button2);
+      }
+      const lineBreak = document.createElement('br');
+      span.appendChild(lineBreak);
+      button.addEventListener("click", function () {
+        let languageSetting = span.dataset.lang;
+        languageSetting ? lang = languageSetting : lang = "en-US";
+        readText(parentText);
+      });
+      button2.addEventListener("click", function () {
+        let languageSetting2 = span.dataset.lang2;
+        languageSetting2 ? lang = languageSetting2 : lang = "th-TH";
+        readText(translatethis);
+      });
+    })
+
+
+    function readText(text) {
+      let utterance = new SpeechSynthesisUtterance(text);
+      utterance.text = text;
+      utterance.lang = lang;
+      utterance.rate = .8;
+      window.speechSynthesis.speak(utterance);
+    }
+
+
+  }
+}
+
+
+customElements.define('read-this', ReadThis);
+
+
+    // let voiceDropdown = document.querySelectorAll("div.read-lines");
+    // voiceDropdown.forEach(vd => {
+    //   vd.appendChild(select);
+    // });
+
+
+      // utterance.voiceURI = utteranceVoiceURI;
+      // console.log("final URI", utterance.voiceURI);
+      // utterance = new SpeechSynthesisUtterance(text);
+      // (lang === "th-TH") ? utterance.voiceURI = "Microsoft Niwat Online (Natural) - Thai (Thailand)" : console.log("nope");
+      // (lang === "en-US") ? utterance.voiceURI = "Microsoft Christopher Online (Natural) - English  (United States)" : console.log("nope");
+      // (lang === "es-MX") ? utterance.voiceURI = "Microsoft Jorge Online (Natural) - Spanish (Mexico)" : console.log("nope");
+      // (lang === "de-DE") ? utterance.voiceURI = "Microsoft Amala Online (Natural) - German (Germany)" : console.log("nope");
+
+
+
+    
     // Add dropdown menu to each span
     // const select = document.createElement('select');
     // select.classList.add('read-this-select');
@@ -41,104 +140,4 @@ class ReadThis extends HTMLElement {
     //     console.log(utteranceVoiceURI);
     //   });
     // })
-
-    const readVocabElements = document.querySelectorAll('.read-vocab');
-    readVocabElements.forEach(readVocab => {
-      let languageSetting = readVocab.dataset.lang;
-      languageSetting ? lang = languageSetting : lang = "en-US";
-      const content = readVocab.textContent.trim();
-      const lines = content.split('\n');
-      readVocab.textContent = "";
-      lines.forEach(line => {
-        const parts = line.split('-');
-
-        const span = document.createElement('span');
-
-        span.classList.add('read-this');
-        span.dataset.lang = lang;
-        let partCleaned = parts[0].trimStart().trim();
-        span.dataset.speak = partCleaned;
-        span.dataset.translate = partCleaned;
-        span.textContent = partCleaned;
-        readVocab.appendChild(span);
-      });
-    })
-
-    readLinesElements.forEach(readLines => {
-      let languageSetting = readLines.dataset.lang;
-      languageSetting ? lang = languageSetting : lang = "en-US";
-      const content = readLines.textContent.trim();
-      const lines = content.split('\n');
-      readLines.textContent = "";
-      lines.forEach(line => {
-        const span = document.createElement('span');
-
-        span.classList.add('read-this');
-        span.dataset.lang = lang;
-        span.dataset.speak = line;
-        span.textContent = line;
-        readLines.appendChild(span);
-
-
-      });
-
-
-    })
-
-    let spans = document.querySelectorAll(".read-this");
-
-    spans.forEach(function (span) {
-      let parentText = span.dataset.speak.trim();
-      let translatethis = span.dataset.translate;
-      console.log('translate this var', translatethis);
-      let button = document.createElement("button");
-      button.innerHTML = '&#127911;';
-      button.className = "read-button";
-      span.appendChild(button);
-      if (translatethis) {
-        let translateSpan = document.createElement("span");
-        translateSpan.textContent = ` (${translatethis})`;
-        translateSpan.setAttribute('translate', 'yes');
-        span.appendChild(translateSpan);
-      }
-      const lineBreak = document.createElement('br');
-      span.appendChild(lineBreak);
-      button.addEventListener("click", function () {
-        console.log(parentText);
-        let languageSetting = span.dataset.lang;
-        languageSetting ? lang = languageSetting : lang = "en-US";
-        console.log(lang);
-        readText(parentText);
-      }
-      )
-    })
-
-    // let voiceDropdown = document.querySelectorAll("div.read-lines");
-    // voiceDropdown.forEach(vd => {
-    //   vd.appendChild(select);
-    // });
-
-    function readText(text) {
-      let utterance = new SpeechSynthesisUtterance(text);
-      utterance.text = text;
-      utterance.lang = lang;
-      utterance.rate = .8;
-      // utterance.voiceURI = utteranceVoiceURI;
-      console.log("final URI", utterance.voiceURI);
-      // utterance = new SpeechSynthesisUtterance(text);
-      // (lang === "th-TH") ? utterance.voiceURI = "Microsoft Niwat Online (Natural) - Thai (Thailand)" : console.log("nope");
-      // (lang === "en-US") ? utterance.voiceURI = "Microsoft Christopher Online (Natural) - English  (United States)" : console.log("nope");
-      // (lang === "es-MX") ? utterance.voiceURI = "Microsoft Jorge Online (Natural) - Spanish (Mexico)" : console.log("nope");
-      // (lang === "de-DE") ? utterance.voiceURI = "Microsoft Amala Online (Natural) - German (Germany)" : console.log("nope");
-      window.speechSynthesis.speak(utterance);
-    }
-
-
-  }
-}
-
-
-customElements.define('read-this', ReadThis);
-
-
 

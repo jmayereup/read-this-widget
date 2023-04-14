@@ -3,35 +3,41 @@ A simple web component for the webspeech api
 
 Include the script in your html and then wrap the text to be read. 
 You can wrap multiple items, but each <div> that you want the 
-widget to appear in and read. It should have class="read-this".
-Class of "read-lines" will create widget after each line break.
+widget to appear in and read. It should have class="read-this" or class="read-vocab".
+These classes will create a widget after each line break.
+If no data-lang2 is specified the voice will default to th-TH for anything
+after the dash.
   
 If the text is not English, you need to specify the language.
 
-      <read-this>
-        <div class="read-this" data-lang="en-US">
-            This is the text to be read.
-        </div>
-        <div class="read-this" data-lang="es-MX">
-            Este es el texto a leer.
-        </div>
-        <div class="read-this" data-lang="th-TH">
-            นี่คือข้อความที่จะอ่าน
-        </div>
-        <div class="read-this">
-            Este es el texto a leer.
-        </div>
-        <div class="read-this">
-            This is the text to be read.
-        </div>
-        <br>
-        <div class="read-lines" data-lang="en-US">
-            This is the text to be read.
-            It will read by lines.
+        <div class="read-lines" data-lang="en-US" data-lang2="es-MX">
+            <h3>This is the text to be read. - Este es el texto a leer.</h3>
+            It will be read by lines.
             <p>HTML tags like p should be ignored.</p>
         </div>
+        <br>
+        <div class="read-lines" data-lang="es-MX">
+            Juan: Mamá, estoy triste. - ฮวน: แม่ครับ ผมเสียใจ
+            María: ¿Por qué, hijo?
+            Juan: Porque Pedro y yo tuvimos una pelea.
+        </div>
+        <br>
+        <div class="read-lines" data-lang="th-TH">
+            ฉาก: ช่วงเวลาพักเที่ยงในโรงอาหารของโรงเรียน
+            แมรี่: สวัสดี นิวัติ! ชั้นเรียนตอนเช้าของคุณเป็นอย่างไร
+            นิวัฒน์: ดีครับ ขอบคุณครับ และของคุณ?
+        </div>
+        <div class="read-lines" data-lang="en-US">
+            <h3>This is the text to be read.</h3>
+            It will be read by lines.
+            <p>HTML tags like p should be ignored.</p>
+        </div>
+        <div class="read-vocab" data-lang="en-US" data-lang2="es-MX">
+            english1 - Mamá, estoy triste. 
+            english2 - ขอบคุณครับ
+            english3 - a phrase definition
+        </div>
     </read-this>
-
     
   
   You can use this `<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jmayereup/read-this-widget/read-this.js"></script>`

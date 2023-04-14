@@ -11,6 +11,7 @@ class ReadThis extends HTMLElement {
     const readThisElement = "";
     let lang = utterance.lang;
     let lang2 = "";
+    let isPlaying = false;
 
 
     const readVocabElements = document.querySelectorAll('.read-vocab');
@@ -20,8 +21,24 @@ class ReadThis extends HTMLElement {
     data.forEach(readVocab => {
       let languageSetting = readVocab.dataset.lang;
       let languageSetting2 = readVocab.dataset.lang2;
+      if (!languageSetting2) {
+        switch (languageSetting) {
+          case "en-US":
+            languageSetting2 = "th-TH";
+            break;
+          case "es-MX":
+            languageSetting2 = "en-US";
+          case "th-TH":
+            languageSetting2 = "en-US";
+          case "de-DE":
+            languageSetting2 = "en-US";  
+          default:
+            languageSetting2 = "en-US"
+            break;
+        }
+      }
       languageSetting ? lang = languageSetting : lang = "en-US";
-      languageSetting2 ? lang2 = languageSetting2 : lang2 = "th-TH";
+      languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
 
       const content = readVocab.textContent.trim();
       const lines = content.split('\n');
@@ -59,8 +76,8 @@ class ReadThis extends HTMLElement {
         button2.innerHTML = '&#127911;';
         button2.className = "read-button";
         let translateSpan = document.createElement("span");
-        let lineBreak1 = document.createElement("br");
-        span.appendChild(lineBreak1);
+        // let lineBreak1 = document.createElement("br");
+        // span.appendChild(lineBreak1);
         translateSpan.textContent = ` (${translatethis})`;
         translateSpan.setAttribute('translate', 'yes');
         span.appendChild(translateSpan);
@@ -71,18 +88,33 @@ class ReadThis extends HTMLElement {
       button.addEventListener("click", function () {
         let languageSetting = span.dataset.lang;
         languageSetting ? lang = languageSetting : lang = "en-US";
-        readText(parentText);
+        if (isPlaying) {
+          speechSynthesis.cancel();
+          isPlaying = false;
+        } else {
+          readText(parentText);
+          isPlaying = true;
+        }
       });
       button2.addEventListener("click", function () {
         let languageSetting2 = span.dataset.lang2;
         languageSetting2 ? lang = languageSetting2 : lang = "th-TH";
-        readText(translatethis);
+        if (isPlaying) {
+          speechSynthesis.cancel();
+          isPlaying = false;
+        } else {
+          readText(translatethis);
+          isPlaying = true;
+        }
       });
     })
 
+    utterance.addEventListener("end", function () {
+      isPlaying = false;
+    });
 
     function readText(text) {
-      let utterance = new SpeechSynthesisUtterance(text);
+      // let utterance = new SpeechSynthesisUtterance(text);
       utterance.text = text;
       utterance.lang = lang;
       utterance.rate = .8;

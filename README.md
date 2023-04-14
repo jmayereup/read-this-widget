@@ -5,8 +5,11 @@ Include the script in your html and then wrap the text to be read.
 You can wrap multiple items, but each <div> that you want the 
 widget to appear in and read. It should have class="read-this" or class="read-vocab".
 These classes will create a widget after each line break.
-If no data-lang2 is specified the voice will default to th-TH for anything
-after the dash.
+If no data-lang2 is specified the voice will default to.
+lang = en-US -> lang2 = th-TH
+lang = es-MX -> lang2 = en-US
+lang = th-TH -> lang2 = en-US
+lang = de-DE -> lang2 = en-US
   
 If the text is not English, you need to specify the language.
 

@@ -75,7 +75,7 @@ class ReadThis extends HTMLElement {
       if (translatethis) {
         button2.innerHTML = '&#127911;';
         button2.className = "read-button";
-        let translateSpan = document.createElement("span");
+        var translateSpan = document.createElement("span");
         // let lineBreak1 = document.createElement("br");
         // span.appendChild(lineBreak1);
         translateSpan.textContent = ` (${translatethis})`;
@@ -98,16 +98,25 @@ class ReadThis extends HTMLElement {
       });
       button2.addEventListener("click", function () {
         let languageSetting2 = span.dataset.lang2;
+        let currentLang = document.documentElement.lang;
+        console.log(currentLang);
+        if (currentLang != "auto") {
+          languageSetting2 = currentLang;
+        }
+        
+        console.log(translateSpan);
         languageSetting2 ? lang = languageSetting2 : lang = "th-TH";
         if (isPlaying) {
           speechSynthesis.cancel();
           isPlaying = false;
         } else {
-          readText(translatethis);
+          readText(translateSpan.textContent);
           isPlaying = true;
         }
       });
     })
+
+
 
     utterance.addEventListener("end", function () {
       isPlaying = false;

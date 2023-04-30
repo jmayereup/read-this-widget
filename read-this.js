@@ -13,114 +13,24 @@ class ReadThis extends HTMLElement {
     let lang2 = "";
     let isPlaying = false;
 
+    utterance.addEventListener("end", function () {
+      isPlaying = false;
+    });
+
 
     const readVocabElements = document.querySelectorAll('.read-vocab');
     prepareLines(readVocabElements);
     
-    function prepareLines(data) {
-    data.forEach(readVocab => {
-      let languageSetting = readVocab.dataset.lang;
-      let languageSetting2 = readVocab.dataset.lang2;
-      if (!languageSetting2) {
-        switch (languageSetting) {
-          case "en-US":
-            languageSetting2 = "th-TH";
-            break;
-          case "es-MX":
-            languageSetting2 = "en-US";
-          case "th-TH":
-            languageSetting2 = "en-US";
-          case "de-DE":
-            languageSetting2 = "en-US";  
-          default:
-            languageSetting2 = "en-US"
-            break;
-        }
-      }
-      languageSetting ? lang = languageSetting : lang = "en-US";
-      languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
-
-      const content = readVocab.textContent.trim();
-      const lines = content.split('\n');
-      readVocab.textContent = "";
-      lines.forEach(line => {
-        const parts = line.split('-');
-
-        const span = document.createElement('span');
-        span.classList.add('read-this');
-        span.dataset.lang = lang;
-        span.dataset.lang2 = lang2;
-        let partCleaned = parts[0].trimStart().trim();
-        span.dataset.speak = partCleaned;
-        (parts[1]) ? span.dataset.translate = parts[1].trimStart().trim() : span.dataset.translate = "";
-        span.textContent = partCleaned;
-        readVocab.appendChild(span);
-      });
-    })
-  }
-
     const readLinesElements = document.querySelectorAll('.read-lines');
     prepareLines(readLinesElements);
 
+    const readSectionElements = document.querySelectorAll('.read-section');
+    prepareSection(readSectionElements);
+
     let spans = document.querySelectorAll(".read-this");
+    addHeadphones(spans);
+   
 
-    spans.forEach(function (span) {
-      let parentText = span.dataset.speak.trim();
-      let translatethis = span.dataset.translate;
-      let button = document.createElement("button");
-      let button2 = document.createElement('button');
-      button.innerHTML = '&#127911;';
-      button.className = "read-button";
-      span.appendChild(button);
-      if (translatethis) {
-        button2.innerHTML = '&#127911;';
-        button2.className = "read-button";
-        var translateSpan = document.createElement("span");
-        // let lineBreak1 = document.createElement("br");
-        // span.appendChild(lineBreak1);
-        translateSpan.textContent = ` (${translatethis})`;
-        translateSpan.setAttribute('translate', 'yes');
-        span.appendChild(translateSpan);
-        span.appendChild(button2);
-      }
-      const lineBreak = document.createElement('br');
-      span.appendChild(lineBreak);
-      button.addEventListener("click", function () {
-        let languageSetting = span.dataset.lang;
-        languageSetting ? lang = languageSetting : lang = "en-US";
-        if (isPlaying) {
-          speechSynthesis.cancel();
-          isPlaying = false;
-        } else {
-          readText(parentText);
-          isPlaying = true;
-        }
-      });
-      button2.addEventListener("click", function () {
-        let languageSetting2 = span.dataset.lang2;
-        let currentLang = document.documentElement.lang;
-        console.log(currentLang);
-        if (currentLang != "auto") {
-          languageSetting2 = currentLang;
-        }
-        
-        console.log(translateSpan);
-        languageSetting2 ? lang = languageSetting2 : lang = "th-TH";
-        if (isPlaying) {
-          speechSynthesis.cancel();
-          isPlaying = false;
-        } else {
-          readText(translateSpan.textContent);
-          isPlaying = true;
-        }
-      });
-    })
-
-
-
-    utterance.addEventListener("end", function () {
-      isPlaying = false;
-    });
 
     function readText(text) {
       // let utterance = new SpeechSynthesisUtterance(text);
@@ -130,6 +40,124 @@ class ReadThis extends HTMLElement {
       window.speechSynthesis.speak(utterance);
     }
 
+    function prepareLines(data) {
+      data.forEach(readVocab => {
+        let languageSetting = readVocab.dataset.lang;
+        let languageSetting2 = readVocab.dataset.lang2;
+        //added for backwards compatibility with old posts 
+        if (!languageSetting2) {
+          switch (languageSetting) {
+            case "en-US":
+              languageSetting2 = "th-TH";
+              break;
+            case "es-MX":
+              languageSetting2 = "en-US";
+            case "th-TH":
+              languageSetting2 = "en-US";
+            case "de-DE":
+              languageSetting2 = "en-US";
+            default:
+              languageSetting2 = "en-US"
+              break;
+          }
+        }
+        languageSetting ? lang = languageSetting : lang = "en-US";
+        languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
+
+        const content = readVocab.textContent.trim();
+        const lines = content.split('\n');
+        readVocab.textContent = "";
+        lines.forEach(line => {
+          const parts = line.split(' - ');
+
+          const span = document.createElement('span');
+          span.classList.add('read-this');
+          span.dataset.lang = lang;
+          span.dataset.lang2 = lang2;
+          let partCleaned = parts[0].trimStart().trim();
+          // span.dataset.speak = partCleaned;
+          // (parts[1]) ? span.dataset.translate = parts[1].trimStart().trim() : span.dataset.translate = partCleaned;
+          span.textContent = partCleaned;
+          readVocab.appendChild(span);
+        });
+      })
+    }
+
+    function prepareSection(data) {
+      data.forEach(readSection => {
+      let languageSetting = readSection.dataset.lang;
+      let languageSetting2 = readSection.dataset.lang2;
+
+      languageSetting ? lang = languageSetting : lang = "en-US";
+      languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
+
+          const span = document.createElement('span');
+          span.classList.add('read-this');
+          span.dataset.lang = lang;
+          span.dataset.lang2 = lang2;
+          span.innerHTML = readSection.innerHTML;
+          readSection.innerHTML = "";
+          readSection.appendChild(span);
+        });
+      }
+  
+
+    function addHeadphones(spans){
+      spans.forEach(function (span) {
+        let parentText = span.innerHTML;
+        let translatethis = span.innerHTML;
+        let button = document.createElement('button');
+        let button2 = document.createElement('button');
+        button.innerHTML = '&#127911;';
+        button.className = "read-button";
+        if (parentText) { span.appendChild(button);}
+        if (translatethis) {
+          button2.innerHTML = '&#127911;';
+          button2.className = "read-button";
+          var translateSpan = document.createElement("span");
+          if (translatethis.length>20){
+            let lineBreak1 = document.createElement("br");
+            span.appendChild(lineBreak1);
+          }
+          translateSpan.innerHTML = ` ${translatethis} `;
+          translateSpan.setAttribute('translate', 'yes');
+          translateSpan.classList.add('translated');
+          span.appendChild(translateSpan);
+          span.appendChild(button2);
+        }
+        const lineBreak = document.createElement('br');
+        span.appendChild(lineBreak);
+        button.addEventListener("click", function () {
+          let languageSetting = span.dataset.lang;
+          languageSetting ? lang = languageSetting : lang = "en-US";
+          if (isPlaying) {
+            speechSynthesis.cancel();
+            isPlaying = false;
+          } else {
+            readText(parentText);
+            isPlaying = true;
+          }
+        });
+        button2.addEventListener("click", function () {
+          let languageSetting2 = span.dataset.lang2;
+          let currentLang = document.documentElement.lang;
+          // console.log(currentLang);
+          if (currentLang != "auto") {
+            languageSetting2 = currentLang;
+          }
+          
+          console.log(translateSpan);
+          languageSetting2 ? lang = languageSetting2 : lang = "th-TH";
+          if (isPlaying) {
+            speechSynthesis.cancel();
+            isPlaying = false;
+          } else {
+            readText(translateSpan.textContent);
+            isPlaying = true;
+          }
+        });
+      })
+    }
 
   }
 }

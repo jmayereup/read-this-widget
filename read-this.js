@@ -8,10 +8,10 @@ class ReadThis extends HTMLElement {
     utterance.pitch = 1;
     let utteranceVoiceURI = null;
 
-    const readThisElement = "";
     let lang = utterance.lang;
     let lang2 = "";
     let isPlaying = false;
+    let useNewLine = false;
 
     utterance.addEventListener("end", function () {
       isPlaying = false;
@@ -19,10 +19,12 @@ class ReadThis extends HTMLElement {
 
 
     const readVocabElements = document.querySelectorAll('.read-vocab');
-    prepareLines(readVocabElements);
+    useNewLine = false;
+    prepareLines(readVocabElements, useNewLine);
     
     const readLinesElements = document.querySelectorAll('.read-lines');
-    prepareLines(readLinesElements);
+    useNewLine = true;
+    prepareLines(readLinesElements, useNewLine);
 
     const readSectionElements = document.querySelectorAll('.read-section');
     prepareSection(readSectionElements);
@@ -33,14 +35,13 @@ class ReadThis extends HTMLElement {
 
 
     function readText(text) {
-      // let utterance = new SpeechSynthesisUtterance(text);
       utterance.text = text;
       utterance.lang = lang;
       utterance.rate = .8;
       window.speechSynthesis.speak(utterance);
     }
 
-    function prepareLines(data) {
+    function prepareLines(data, nlinevalue) {
       data.forEach(readVocab => {
         let languageSetting = readVocab.dataset.lang;
         let languageSetting2 = readVocab.dataset.lang2;
@@ -74,9 +75,8 @@ class ReadThis extends HTMLElement {
           span.classList.add('read-this');
           span.dataset.lang = lang;
           span.dataset.lang2 = lang2;
+          span.dataset.nline = nlinevalue;
           let partCleaned = parts[0].trimStart().trim();
-          // span.dataset.speak = partCleaned;
-          // (parts[1]) ? span.dataset.translate = parts[1].trimStart().trim() : span.dataset.translate = partCleaned;
           span.textContent = partCleaned;
           readVocab.appendChild(span);
         });
@@ -95,6 +95,7 @@ class ReadThis extends HTMLElement {
           span.classList.add('read-this');
           span.dataset.lang = lang;
           span.dataset.lang2 = lang2;
+          span.dataset.nline = 'true';
           span.innerHTML = readSection.innerHTML;
           readSection.innerHTML = "";
           readSection.appendChild(span);
@@ -106,6 +107,7 @@ class ReadThis extends HTMLElement {
       spans.forEach(function (span) {
         let parentText = span.innerHTML;
         let translatethis = span.innerHTML;
+        let nline = span.dataset.nline;
         let button = document.createElement('button');
         let button2 = document.createElement('button');
         button.innerHTML = '&#127911;';
@@ -115,7 +117,7 @@ class ReadThis extends HTMLElement {
           button2.innerHTML = '&#127911;';
           button2.className = "read-button";
           var translateSpan = document.createElement("span");
-          if (translatethis.length>20){
+          if (nline=="true"){
             let lineBreak1 = document.createElement("br");
             span.appendChild(lineBreak1);
           }

@@ -2,13 +2,13 @@ class ReadThis extends HTMLElement {
   constructor() {
     super();
     let utterance = new SpeechSynthesisUtterance();
-    utterance.lang = 'en-US';
+    utterance.lang = 'en-CA';
     utterance.volume = 1;
     utterance.rate = 1;
     utterance.pitch = 1;
-    let utteranceVoiceURI = null;
+    // let utteranceVoiceURI = null;
 
-    let lang = utterance.lang;
+    let lang = 'en-CA';
     let lang2 = "";
     let isPlaying = false;
     let useNewLine = false;
@@ -32,40 +32,60 @@ class ReadThis extends HTMLElement {
     let spans = document.querySelectorAll(".read-this");
     addHeadphones(spans);
    
+    if ('!speechSynthesis' in window) {
+      this.ttsSupported = true;
+      console.log("TTS supported.");
+    } else if (!document.getElementById('tts-not-supported-warning'))  {
+      let parent = document.querySelector('section');
+      let warningElement = document.createElement('div');
+      warningElement.textContent = `TTS SPEECH NOT SUPPORTED:
+      You need to open this page in a browser like Firefox, Chrome, Safari or Edge.
+      It will not work if you open it from most messaging apps.`;
+      warningElement.classList.add('warning');
+      warningElement.id = 'tts-not-supported-warning';
+      parent?.insertBefore(warningElement, parent.firstChild);
+    }
+
 
 
     function readText(text) {
       utterance.text = text;
       utterance.lang = lang;
       utterance.rate = .8;
+      utterance.onend = () => {
+        isPlaying = false; };
       window.speechSynthesis.speak(utterance);
+      
+
     }
 
     function prepareLines(data, nlinevalue) {
       data.forEach(readVocab => {
         let languageSetting = readVocab.dataset.lang;
+        if(languageSetting==="en-US") languageSetting = "en-CA";
         let languageSetting2 = readVocab.dataset.lang2;
         //added for backwards compatibility with old posts 
         if (!languageSetting2) {
           switch (languageSetting) {
-            case "en-US":
+            case "en-CA":
               languageSetting2 = "th-TH";
               break;
             case "es-MX":
-              languageSetting2 = "en-US";
+              languageSetting2 = "en-CA";
             case "th-TH":
-              languageSetting2 = "en-US";
+              languageSetting2 = "en-CA";
             case "de-DE":
-              languageSetting2 = "en-US";
+              languageSetting2 = "en-CA";
             default:
-              languageSetting2 = "en-US"
+              languageSetting2 = "en-CA"
               break;
           }
         }
-        languageSetting ? lang = languageSetting : lang = "en-US";
-        languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
+        languageSetting ? lang = languageSetting : lang = "en-CA";
+        languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-CA";
 
-        const content = readVocab.textContent.trim();
+        let content = readVocab.textContent.trim();
+        content = content.replace(/([.?!])\s*(?=[A-Z])/g, '$1\n');
         const lines = content.split('\n');
         readVocab.textContent = "";
         lines.forEach(line => {
@@ -86,10 +106,11 @@ class ReadThis extends HTMLElement {
     function prepareSection(data) {
       data.forEach(readSection => {
       let languageSetting = readSection.dataset.lang;
+      if(languageSetting==="en-US") languageSetting = "en-CA";
       let languageSetting2 = readSection.dataset.lang2;
 
-      languageSetting ? lang = languageSetting : lang = "en-US";
-      languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-US";
+      languageSetting ? lang = languageSetting : lang = "en-CA";
+      languageSetting2 ? lang2 = languageSetting2 : lang2 = "en-CA";
 
           const span = document.createElement('span');
           span.classList.add('read-this');
@@ -108,11 +129,16 @@ class ReadThis extends HTMLElement {
         let parentText = span.innerHTML;
         let translatethis = span.innerHTML;
         let nline = span.dataset.nline;
+        let parentSpan = document.createElement('span');
         let button = document.createElement('button');
         let button2 = document.createElement('button');
         button.innerHTML = '&#127911;';
         button.className = "read-button";
-        if (parentText) { span.appendChild(button);}
+        if (parentText) { 
+          parentSpan.innerHTML = parentText;
+          span.innerHTML = "";
+          span.appendChild(parentSpan);
+          span.appendChild(button);}
         if (translatethis) {
           button2.innerHTML = '&#127911;';
           button2.className = "read-button";
@@ -131,12 +157,12 @@ class ReadThis extends HTMLElement {
         span.appendChild(lineBreak);
         button.addEventListener("click", function () {
           let languageSetting = span.dataset.lang;
-          languageSetting ? lang = languageSetting : lang = "en-US";
+          languageSetting ? lang = languageSetting : lang = "en-CA";
           if (isPlaying) {
             speechSynthesis.cancel();
             isPlaying = false;
           } else {
-            readText(parentText);
+            readText(parentSpan.textContent);
             isPlaying = true;
           }
         });
@@ -166,49 +192,3 @@ class ReadThis extends HTMLElement {
 
 
 customElements.define('read-this', ReadThis);
-
-
-    // let voiceDropdown = document.querySelectorAll("div.read-lines");
-    // voiceDropdown.forEach(vd => {
-    //   vd.appendChild(select);
-    // });
-
-
-      // utterance.voiceURI = utteranceVoiceURI;
-      // console.log("final URI", utterance.voiceURI);
-      // utterance = new SpeechSynthesisUtterance(text);
-      // (lang === "th-TH") ? utterance.voiceURI = "Microsoft Niwat Online (Natural) - Thai (Thailand)" : console.log("nope");
-      // (lang === "en-US") ? utterance.voiceURI = "Microsoft Christopher Online (Natural) - English  (United States)" : console.log("nope");
-      // (lang === "es-MX") ? utterance.voiceURI = "Microsoft Jorge Online (Natural) - Spanish (Mexico)" : console.log("nope");
-      // (lang === "de-DE") ? utterance.voiceURI = "Microsoft Amala Online (Natural) - German (Germany)" : console.log("nope");
-
-
-
-    
-    // Add dropdown menu to each span
-    // const select = document.createElement('select');
-    // select.classList.add('read-this-select');
-
-    // speechSynthesis.addEventListener('voiceschanged', (event) => {
-
-    //   const voices = speechSynthesis.getVoices().filter((voice) => {
-
-    //     return voice.lang === lang;
-
-    //   });
-    //   console.log(voices);
-    //   // Add option elements, one for each matching voice
-    //   voices.forEach((voice) => {
-    //     const option = document.createElement('option');
-    //     option.value = voice.voiceURI;
-    //     option.textContent = voice.name;
-    //     select.appendChild(option);
-    //   });
-
-    //   // Listen for the change event on the select element
-    //   select.addEventListener('change', (event) => {
-    //     utteranceVoiceURI = event.target.value;
-    //     console.log(utteranceVoiceURI);
-    //   });
-    // })
-

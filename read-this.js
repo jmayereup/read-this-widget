@@ -32,18 +32,22 @@ class ReadThis extends HTMLElement {
     let spans = document.querySelectorAll(".read-this");
     addHeadphones(spans);
    
-    if ('!speechSynthesis' in window) {
-      this.ttsSupported = true;
+    if ('speechSynthesis' in window) {
       console.log("TTS supported.");
-    } else if (!document.getElementById('tts-not-supported-warning'))  {
+    } 
+    if (('speechSynthesis' in window) == false) {
+      console.log("TTS not supported.");
+      if (!document.getElementById('tts-not-supported-warning'))  {
       let parent = document.querySelector('section');
       let warningElement = document.createElement('div');
-      warningElement.textContent = `TTS SPEECH NOT SUPPORTED:
+      warningElement.textContent = `TEXT-TO-SPEECH NOT SUPPORTED:
       You need to open this page in a browser like Firefox, Chrome, Safari or Edge.
       It will not work if you open it from most messaging apps.`;
       warningElement.classList.add('warning');
       warningElement.id = 'tts-not-supported-warning';
       parent?.insertBefore(warningElement, parent.firstChild);
+      }
+      console.log("TTS not supported.");
     }
 
 

@@ -11,7 +11,7 @@ class ReadThis extends HTMLElement {
     let lang = 'en-CA';
     let lang2 = "";
     let isPlaying = false;
-    let useNewLine = false;
+    // let useNewLine = false;
 
     utterance.addEventListener("end", function () {
       isPlaying = false;
@@ -19,12 +19,12 @@ class ReadThis extends HTMLElement {
 
 
     const readVocabElements = document.querySelectorAll('.read-vocab');
-    useNewLine = false;
-    prepareLines(readVocabElements, useNewLine);
+    // useNewLine = false;
+    prepareLines(readVocabElements);
     
     const readLinesElements = document.querySelectorAll('.read-lines');
-    useNewLine = true;
-    prepareLines(readLinesElements, useNewLine);
+    // useNewLine = true;
+    prepareLines(readLinesElements);
 
     const readSectionElements = document.querySelectorAll('.read-section');
     prepareSection(readSectionElements);
@@ -120,7 +120,7 @@ class ReadThis extends HTMLElement {
           span.classList.add('read-this');
           span.dataset.lang = lang;
           span.dataset.lang2 = lang2;
-          span.dataset.nline = 'true';
+          // span.dataset.nline = 'true';
           span.innerHTML = readSection.innerHTML;
           readSection.innerHTML = "";
           readSection.appendChild(span);
@@ -142,20 +142,20 @@ class ReadThis extends HTMLElement {
           parentSpan.innerHTML = parentText;
           span.innerHTML = "";
           span.appendChild(parentSpan);
-          span.appendChild(button);}
+          parentSpan.appendChild(button);}
         if (translatethis) {
           button2.innerHTML = '&#127911;';
           button2.className = "read-button";
           var translateSpan = document.createElement("span");
-          if (nline=="true"){
-            let lineBreak1 = document.createElement("br");
-            span.appendChild(lineBreak1);
-          }
+          // if (nline=="true"){
+          //   let lineBreak1 = document.createElement("br");
+          //   span.appendChild(lineBreak1);
+          // }
           translateSpan.innerHTML = ` ${translatethis} `;
           translateSpan.setAttribute('translate', 'yes');
           translateSpan.classList.add('translated');
           span.appendChild(translateSpan);
-          span.appendChild(button2);
+          translateSpan.appendChild(button2);
         }
         const lineBreak = document.createElement('br');
         span.appendChild(lineBreak);
